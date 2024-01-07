@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://emoji-css.afeld.me/emoji.css" rel="stylesheet">
+<title>Document</title>
+</head>
+<style>
+   
+
+#container{
+    background-color: black;
+    width: 100vw;
+    height: 75vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    
+}
+#container2{
+    width: 100vw;
+    height: 20vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url("mdn_logo_only_color.png");
+    gap: 200px;
+    position: absolute;
+    bottom:0px;
+}
+#container2 button:nth-child(1),button:nth-child(3) {
+        background-color: #07293f;
+        color: #fff;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        width: 100px;
+        height: 50px;
+        font-size: 20px;
+    }
+    #container2 button:nth-child(2) {
+        background-color:green;
+        color: #fff;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        width: 200px;
+        height: 70px;
+        font-size: 25px;
+    }
+    #container button:nth-child(1) {
+        background-color: #0e3f07;
+        color: #fff;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        
+        
+    }     
+        #container button:nth-child(2) {
+        background-color:white;
+        width: 150px;
+        height: 50px;
+        color:rgb(117, 7, 53);
+        padding: 10px 15px;
+        font-size: 25px;
+        border: none;
+        border-radius: 5px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }     
+    #nameofsong{
+    color: white;
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 100vw;
+    font-size: 60px;
+    text-align: center;
+    }
+
+    #listsongs{
+    position: absolute;
+    top: 50px;
+    left: -10px;
+    
+    }
+    
+    #listsongs>ul>li{
+    list-style-type: none;
+    width: 200px;
+    height: 40px;
+    background-color:rgb(155, 93, 214);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    }
+#timetodisplay{
+display: flex;
+width: 70vw;
+height: 300px;
+color: rgb(248, 225, 186);
+justify-content: space-around;
+font-size: 200px;
+position: absolute;
+bottom: 100px;
+text-shadow: 8px 2px 2px rgba(248, 246, 246, 0.6);
+}
+</style>
+<body>
+    
+
+<div id="container">
+    <button onclick="addToPlaylist()">Add to playlist</button>
+    <button onclick="addToFavourite()">Favourite</button>
+    <div id="listsongs">
+
+    </div>
+    <div id="nameofsong"></div>
+    <audio id="myAudio">
+        <source src="" type="audio/mp3">
+    </audio>
+
+    <div id="timetodisplay">
+        <div id="runtimeDisplay"></div>
+        <div  id="durationDisplay"></div>
+    </div>
+</div>
+
+<div id="container2">
+    <button onclick="prev()">Previous</button>
+    <button onclick="playAudio()" id="playpause"></button>
+    <button onclick="next()">Next</button> 
+</div>
+
+
+
+
+
+
+
+<script>
+    var favourite=[];
+    var playlist=[];
+    varimgsrc=document.getElementById("imgsrc");
+    var songs=["./assets/Elangaathu.mp3","./assets/Appadi-Podu.mp3","./assets/Devathayai-Kanden.mp3","./assets/Kadhal-Konden.mp3","./assets/Rakkama-Kaiya-Thattu.mp3","./assets/Vethalaiya-Potendi-MassTamilan.fm.mp3"];
+    var playpause=document.getElementById("playpause");
+    var audio = document.getElementById('myAudio');
+    var currentsong=audio.querySelector("source");
+    var songname=document.getElementById("nameofsong");
+    var listsongs=document.getElementById("listsongs");
+    playpause.innerText="Play";
+    var index=0;
+    
+    currentsong.src=songs[index];
+    songname.innerText=songs[index].substring(songs[index].lastIndexOf('/')+1);
+    function playAudio() { 
+        updateDurationDisplay();
+        if (audio.paused) {
+            playpause.innerText="Pause";
+                
+            audio.play();
+            document.querySelector("#container2 button:nth-child(2)").style.backgroundColor = "red";  
+        } 
+        else {
+            playpause.innerText="Play";
+            audio.pause();
+            document.querySelector("#container2 button:nth-child(2)").style.backgroundColor = "green";
+
+        }
+    }
+    setInterval(updateRuntimeDisplay, 1000); 
+    audio.addEventListener('ended',next);
+
+    function next(){
+        index++;
+        if(index>=songs.length){
+            index=0;
+        }
+        
+        changesource();
+    }
+
+    function prev(){
+        index--;
+        if(index<=-1){
+            index=songs.length-1;
+        }
+        
+        changesource();
+    }
+
+    function changesource(){
+        audio.pause();
+        currentsong.src = songs[index];
+        audio.load();
+        audio.play(); 
+        playpause.innerText = "Pause";
+        songname.innerText=songs[index].substring(songs[index].lastIndexOf('/')+1);
+        if(favourite.includes(songs[index])){
+            document.querySelector("#container button:nth-child(2)").style.backgroundColor = "rgb(117, 7, 53)";
+            document.querySelector("#container button:nth-child(2)").style.color="white";
+            
+        }
+        else{
+            document.querySelector("#container button:nth-child(2)").style.backgroundColor = "white";
+            document.querySelector("#container button:nth-child(2)").style.color="rgb(117, 7, 53)";
+        }
+    
+    }
+    audio.addEventListener('loadedmetadata', updateDurationDisplay);
+
+
+    function addToPlaylist(){
+        listsongs.innerText='';
+        if(!playlist.includes(songs[index])){
+        playlist.push(songs[index]);
+        }
+        
+            
+        playlist.forEach((playlist,index)=>{
+        var ullist=document.createElement("ul");
+        var listsong=document.createElement("li");
+        listsong.textContent=playlist.substring(playlist.lastIndexOf('/')+1);
+        ullist.appendChild(listsong);
+        listsongs.appendChild(ullist);
+        })
+        setTimeout(()=>{ listsongs.innerText=''},3000);
+    }
+
+    function addToFavourite(){
+        
+        if(!favourite.includes(songs[index])){
+            document.querySelector("#container button:nth-child(2)").style.backgroundColor = "rgb(117, 7, 53)";
+            document.querySelector("#container button:nth-child(2)").style.color="white";
+            favourite.push(songs[index]);
+            
+    }
+        else{
+            document.querySelector("#container button:nth-child(2)").style.backgroundColor = "white";
+            document.querySelector("#container button:nth-child(2)").style.color="rgb(117, 7, 53)";
+            favourite.pop(songs[index]);
+        }
+        
+        }
+    
+
+        function updateDurationDisplay() {
+    durationDisplay.innerText = formatTime(audio.duration);
+}
+
+
+
+
+function formatTime(seconds) {
+    var minutes = Math.floor(seconds / 60);
+    var remainingSeconds = Math.floor(seconds % 60);
+    return minutes + ':' + (remainingSeconds < 10 ? '0' : '') + remainingSeconds;
+}
+function updateRuntimeDisplay() {
+    var runtimeDisplay = document.getElementById("runtimeDisplay");
+    runtimeDisplay.innerText = formatTime(audio.currentTime);
+}
+
+</script>
+</body>
+
+</html>
